@@ -50,8 +50,8 @@ describe("Phase 1 - Hash table implementation", function () {
     expect(hashTable.data[1].next.key).to.equal("key2");
     expect(hashTable.data[1].key).to.equal("key4");
 
-    // expect(hashTable.data[1].next.value).to.equal("value2");
-    // expect(hashTable.data[1].value).to.equal("value4");
+    expect(hashTable.data[1].next.value).to.equal("value2");
+    expect(hashTable.data[1].value).to.equal("value4");
   });
 
   it("can insert and handle same key, value updates", function () {

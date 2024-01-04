@@ -32,14 +32,14 @@ class HashTable {
 
   insert(key, value) {
     const LOAD_FACTOR = 0.7;
-    // Your code here
-    // Get index
+
     if (this.count / this.capacity > LOAD_FACTOR) this.resize();
     const newDataValue = new KeyValuePair(key, value);
     const index = this.hashMod(key);
 
     if (!this.data[index]) {
       this.data[index] = newDataValue;
+      this.count++;
     } else {
       let current = this.data[index];
       while (current && current.key !== key) {
@@ -48,34 +48,37 @@ class HashTable {
       if (current) {
         current.value = value;
         return;
+      } else {
+        newDataValue.next = this.data[index];
+        this.data[index] = newDataValue;
+        this.count++;
+        return;
       }
-      newDataValue.next = this.data[index];
-      this.data[index] = newDataValue;
     }
-    this.count++;
   }
 
   read(key) {
     const index = this.hashMod(key);
-
     let current = this.data[index];
     while (current && current.key !== key) {
       current = current.next;
     }
-
     return current ? current.value : undefined;
   }
 
   resize() {
-    const odlData = this.data;
-    this.capacity = this.capacity * 2;
-    this.data = new Array(this.capacity).fill(null);
     this.count = 0;
-    for (let i = 0; i < odlData.length; i++) {
-      let current = odlData[i];
+    this.capacity = this.capacity * 2;
+    const oldData = this.data;
+    this.data = new Array(this.capacity).fill(null);
+
+    for (let i = 0; i < this.data.length; i++) {
+      let current = oldData[i];
+
       if (current) {
         while (current) {
-          this.insert(current.key, current.value);
+          let { key, value } = current;
+          this.insert(key, value);
           current = current.next;
         }
       }
@@ -83,16 +86,15 @@ class HashTable {
   }
 
   delete(key) {
-    let index = this.hashMod(key);
-
+    const index = this.hashMod(key);
     let current = this.data[index];
     let previous;
     while (current && current.key !== key) {
       previous = current;
       current = current.next;
     }
-
     if (!current) return "Key not found";
+
     if (previous) {
       previous.next = current.next;
     } else {
