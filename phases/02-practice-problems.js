@@ -56,7 +56,24 @@ function twoSum(nums, target) {
 }
 
 function wordPattern(pattern, strings) {
-  // Your code here
+  if (pattern.length !== strings.length) return false;
+
+  const patternSet = new Set();
+  const stringsSet = new Set();
+  const objPatternWord = {};
+
+  for (let i = 0; i < strings.length; i++) {
+    const char = pattern[i];
+    const word = strings[i];
+    if (!patternSet.has(char) && !stringsSet.has(word)) {
+      patternSet.add(char);
+      stringsSet.add(word);
+      objPatternWord[char] = word;
+    } else if (objPatternWord[char] !== word) {
+      return false;
+    }
+  }
+  return true;
 }
 
 module.exports = [anagrams, commonElements, duplicate, twoSum, wordPattern];
